@@ -1,0 +1,72 @@
+You need to implement a class that calculates the moving average of a stream of integers within a sliding window of a fixed size.
+
+The MovingAverage class should support two operations:
+
+
+* Constructor MovingAverage(int size): Initializes the object with a window size. This window will hold at most size recent values from the stream.
+* Method next(int val): Adds a new integer val to the stream and returns the average of the most recent values in the window. If the total number of values seen so far is less than the window size, it returns the average of all values seen so far.
+
+
+
+
+
+Input:
+MovingAverage(3)
+next(1) → 1.0
+next(10) → 5.5
+next(3) → 4.666...
+next(5) → 6.0
+
+Output:
+1.0, 5.5, 4.666..., 6.0
+
+
+k=3
+
+1 /1 ‎ = 11
+(1,10)/2 = 5.5
+(1,10,3)/3  = 4.66
+(10,3,5)/3 = 6.0
+
+Sliding window + AVG
+
+
+We need to keep track of size of the current K Once size hits, we need to  evict the oldest key to make space for new one.
+When size doesn’t hit -> we can go ahead and calculate
+
+
+We can have a deque DS  evict from front
+Add to end.
+
+
+
+
+
+
+#include <deque>
+using namespace std;
+
+class MovingAverage {
+private:
+    deque<int> q;
+    int k;
+    int sum;
+
+public:
+    MovingAverage(int size) {
+        k = size;
+        sum = 0;
+    }
+
+    double next(int val) {
+        q.push_back(val);
+        sum += val;
+
+        if (q.size() > k) {
+            sum -= q.front();
+            q.pop_front();
+        }
+
+        return (double)sum / q.size();
+    }
+};
