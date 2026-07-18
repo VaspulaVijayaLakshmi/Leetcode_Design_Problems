@@ -1,0 +1,39 @@
+//  INORDER traversal -   left -> root -> right
+//build inorder array
+
+class BSTIterator {
+public:
+
+    stack<TreeNode* > stk;
+
+    void pushLeft(TreeNode* node){
+
+        while(node){
+            stk.push(node);
+            node=node->left;
+        }
+    }
+
+    BSTIterator(TreeNode* root) {
+        pushLeft(root);    
+    }
+    
+    int next() {
+        
+        TreeNode* top = stk.top();
+        stk.pop();
+        
+        if(top->right)
+        pushLeft(top->right);
+
+        return top->val;
+
+    }
+    
+    bool hasNext() {
+        return !stk.empty();
+    }
+};
+
+
+
