@@ -1,0 +1,122 @@
+Problem Description
+You need to design a data structure that can iterate through a compressed string. The compressed string follows a specific format where each letter is immediately followed by a positive integer indicating how many times that letter appears.
+
+For example, if you have a compressed string like "L1e2t1C1o1d1e1", it represents the uncompressed string "LeetCode" where:
+
+L appears 1 time
+e appears 2 times
+t appears 1 time
+C appears 1 time
+o appears 1 time
+d appears 1 time
+e appears 1 time
+Your StringIterator class should support two operations:
+
+next(): Returns the next character from the uncompressed sequence. If all characters have been consumed, it returns a white space ' '.
+
+hasNext(): Returns true if there are still characters left to be returned from the uncompressed string, false otherwise.
+
+The solution parses the compressed string during initialization by:
+
+Extracting each character c and its count x
+Storing these pairs in a list d as [character, count]
+Using a pointer p to track which character-count pair is currently being processed
+
+
+When next() is called:
+
+It returns the current character if available
+Decrements the count for that character
+Moves to the next character-count pair when the current count reaches zero.
+
+The hasNext() method checks if there are any remaining characters by verifying if the pointer 
+is within bounds and the current character still has a positive count.
+
+
+
+
+
+
+sol^
+//we could use a map as well, but it wont reserve the order
+//we can ue a list only.
+
+
+
+
+
+
+class StringIterator {
+public:
+
+  private:
+    // Vector storing pairs of (character, remaining count)
+    vector<pair<char, int>> charCountPairs;
+
+    // Index of the current character-count pair being processed
+    int currentPairIndex = 0;
+
+
+
+    
+    StringIterator(string compressedString) {
+
+        int stringLength = compressedString.size();
+        int index = 0;
+
+        while (index < stringLength) {
+           
+            char character = compressedString[index];
+
+            // Extract the count (may be multi-digit)
+            int count = 0;
+            index++; 
+
+            while (index < stringLength && isdigit(compressedString[index])) {
+                count = count * 10 + (compressedString[index] - '0');
+                index++;
+            }
+
+           
+            charCountPairs.push_back({character, count});
+        }
+    }
+
+
+
+   
+    char next() {
+       
+        if (!hasNext()) {
+            return ' ';
+        }
+
+        // Get the current character
+        char result = charCountPairs[currentPairIndex].first;
+
+        // Decrement the count for current character
+        charCountPairs[currentPairIndex].second--;
+
+        // Move to next pair if current count reaches 0
+        if (charCountPairs[currentPairIndex].second == 0) {
+            currentPairIndex++;
+        }
+
+        return result;
+    }
+
+
+
+
+    /**
+     * Checks if there are more characters to iterate
+     * @return: true if more characters exist, false otherwise
+     */
+    bool hasNext() {
+        // Check if current index is valid and has remaining count
+        return currentPairIndex < charCountPairs.size() &&
+               charCountPairs[currentPairIndex].second > 0;
+    }
+
+
+};
