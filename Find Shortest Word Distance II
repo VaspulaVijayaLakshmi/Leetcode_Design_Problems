@@ -1,0 +1,111 @@
+Design a data structure that will be initialized with a string array, and then it should answer queries of the shortest distance between two different strings from the array.
+
+Implement the WordDistance class:
+
+WordDistance(String[] wordsDict): constructor to initialize the object with the strings array wordsDict.
+int shortest(String word1, String word2): returns the shortest distance between word1 and word2 in the array wordsDict.
+Examples:
+
+Input:
+["WordDistance", "shortest", "shortest"]
+[[["hello", "geek", "gfg", "coding", "geek"]], ["coding", "hello"], ["geek", "coding"]]
+Output
+[null, 3, 1]
+Explanation:
+
+
+The first query calls the constructor and initializes word dictionary with words: ["hello", "geek", "gfg", "coding", "geek"], therefore returns null.
+wordDistance.shortest("coding", "hello") finds the minimum distance between "coding" and "hello", that is 3 - 0 = 3
+wordDistance.shortest("geek", "coding") finds the minimum distance between "coding" and "geek", that is 4 - 3 = 1
+Input:
+["WordDistance", "shortest", "shortest"]
+[[["abc", "def", "ghi", "abc"]], ["abc", "ghi"], ["abc", "def"]]
+Output:
+[null, 1, 1]
+Explanation:
+
+
+The first query calls the constructor and initializes word dictionary with words: ["abc", "def", "ghi", "abc"], therefore returns null.
+wordDistance.shortest("abc", "ghi") finds the minimum distance between "abc" and "ghi", that is 3 - 2 = 1
+wordDistance.shortest("abc", "def") finds the minimum distance between "abc" and "def", that is 1 - 0 = 1
+
+
+Maintain  ampa to store the word, and list of occurences of that string...
+When the distance of words query comes..
+
+retrieve those 2 string and their locations....List of locations..
+And out of that use 2 pointer to find min dostance...
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class WordDistance {
+public:
+    // Store the indices of each word in the dictionary
+    unordered_map<string, vector<int> > map;
+
+    // Constructor to initialize the data structure with the
+    // given word array.
+    WordDistance(vector<string>& wordsDict)
+    {
+        // Store the index for each occurrence of the word
+        for (int i = 0; i < wordsDict.size(); ++i) {
+            map[wordsDict[i]].push_back(i);
+        }
+    }
+
+    // Calculates the shortest distance between two given
+    // words in the dictionary.
+    int shortest(const string& word1, const string& word2)
+    {
+        // Initialize with maximum possible distance
+        int minDistance = INT_MAX;
+
+        // Iterate through the indices of word1 and word2
+        for (int i = 0, j = 0; i < map[word1].size()
+                               && j < map[word2].size();) {
+            int index1 = map[word1][i];
+            int index2 = map[word2][j];
+
+            // Update the minimum distance if a smaller
+            // distance is found
+            minDistance
+                = min(minDistance, abs(index1 - index2));
+
+            // If index1 is smaller, move to the next
+            // occurence of word1
+            if (index1 < index2) {
+                ++i;
+            }
+            // Otherwise move to the next
+            // occurence of word2
+            else {
+                ++j;
+            }
+        }
+
+        return minDistance;
+    }
+};
+
+// Driver code to test the WordDistance class
+int main()
+{
+    vector<string> words
+        = { "hello", "geek", "gfg", "coding", "geek" };
+    WordDistance wordDistance(words);
+
+    cout << "Shortest distance between 'coding' and "
+            "'hello': "
+         << wordDistance.shortest("coding", "hello")
+         << endl;
+    cout
+        << "Shortest distance between 'geek' and 'coding': "
+        << wordDistance.shortest("geek", "coding") << endl;
+
+    return 0;
+}
