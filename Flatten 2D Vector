@@ -1,0 +1,25 @@
+Problem Description
+You need to design an iterator that can traverse through a 2D vector (a list of lists) as if it were a 1D vector. 
+The iterator should flatten the 2D structure and allow sequential access to all elements.
+
+
+The Vector2D class needs to implement three methods:
+
+Constructor Vector2D(int[][] vec): Takes a 2D vector as input and initializes the iterator. The 2D vector may contain empty lists.
+
+next(): Returns the next integer element in the flattened sequence and advances the internal pointer to the subsequent element. 
+The problem guarantees that next() will only be called when there are remaining elements.
+
+hasNext(): Returns true if there are more elements to iterate through, false otherwise.
+
+
+
+maintain :
+
+
+vector<vector> grid;
+int rows;
+int cols;
+int itr;
+
+itr 
