@@ -1,16 +1,105 @@
-This problem asks you to design an encoding and decoding system for a list of strings. You need to implement two functions:
+Problem Description
 
-encode: Takes a list of strings and converts it into a single string
-decode: Takes the encoded string and converts it back to the original list of strings
-The key challenge is that the strings in the list can contain any characters, including special characters, spaces, or even characters that might typically be used as delimiters. Your encoding scheme must be able to handle all possible string contents and accurately reconstruct the original list.
+Design an algorithm to encode a list of strings into a single string and then decode it back to the original list of strings.
 
-Example workflow:
+Your implementation should provide two methods:
 
-Machine 1 has a list of strings like ["Hello", "World"]
-It encodes this list into a single string using your encode function
-This encoded string is sent over the network to Machine 2
-Machine 2 uses your decode function to reconstruct the exact original list ["Hello", "World"]
+encode(List<String> strs)
+Takes a list of strings and converts it into a single encoded string.
+decode(String s)
+Takes the encoded string and reconstructs the original list of strings.
+
+The encoding and decoding should be lossless, meaning:
+
+decode(encode(strs)) == strs
+
+for any valid input.
+
+Notes
+The strings may contain any characters, including:
+Letters
+Digits
+Spaces
+Special characters
+Empty strings ("")
+You cannot rely on a delimiter like ',' or '#' alone because those characters may also appear inside the strings.
+There is no restriction on the contents of the strings, so your encoding scheme must uniquely identify the boundaries of each string.
 
 
-Encode and decode flow..
+We need to store the size of the string -> when encoding.
+but we need to careful because the string maycontain -> numbers and delimeters..
 
+
+The standard solution
+
+Use the length of the string.
+Encode each string as:
+length + '#' + string
+
+Example:
+
+["cat", "hello"]
+becomes
+3#cat5#hello
+
+
+
+During decoding:
+
+Read digits until #.
+Convert them to an integer len.
+Read the next len characters—they belong to the string.
+Repeat.
+
+
+
+
+
+class Codec {
+public:
+
+    // Encodes a list of strings to a single string.
+    string encode(vector<string>& strs) {
+
+        string encoded = "";
+
+        for (string &str : strs) {
+
+            encoded += to_string(str.size());
+            encoded += '#';
+            encoded += str;
+        }
+
+        return encoded;
+    }
+
+    // Decodes a single string to a list of strings.
+    vector<string> decode(string s) {
+
+        vector<string> result;
+
+        int i = 0;
+
+        while (i < s.size()) {
+
+            // Read the length
+            int j = i;
+
+            while (s[j] != '#')
+                j++;
+
+            int len = stoi(s.substr(i, j - i));
+
+            // Move past '#'
+            j++;
+
+            // Read the next 'len' characters
+            result.push_back(s.substr(j, len));
+
+            // Move to the next encoded string
+            i = j + len;
+        }
+
+        return result;
+    }
+};
