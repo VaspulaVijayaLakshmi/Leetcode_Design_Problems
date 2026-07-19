@@ -12,14 +12,45 @@ The problem guarantees that next() will only be called when there are remaining 
 
 hasNext(): Returns true if there are more elements to iterate through, false otherwise.
 
+***
+
+rows can be empty and each row can have a different length.
 
 
-maintain :
+
+Maintain :
 
 
-vector<vector> grid;
-int rows;
-int cols;
-int itr;
+\class Vector2D {
+public:
+    vector<vector<int>> vec;
+    int row;
+    int col;
 
-itr 
+    Vector2D(vector<vector<int>>& vec) {
+        this->vec = vec;
+        row = 0;
+        col = 0;
+    }
+
+    int next() {
+
+        hasNext();              // Move to next valid position if needed
+
+        return vec[row][col++];
+    }
+
+    bool hasNext() {
+
+        while (row < vec.size() && col >= vec[row].size()) {
+            row++;
+            col = 0;
+        }
+
+        return row < vec.size();
+    }
+};
+
+
+
+
