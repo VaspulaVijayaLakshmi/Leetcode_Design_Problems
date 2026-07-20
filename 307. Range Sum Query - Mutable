@@ -1,0 +1,93 @@
+class NumArray {
+
+    class Node {
+
+        int start;
+        int end;
+        int sum;
+
+        Node left;
+        Node right;
+
+        public Node() {
+            start = 0;
+            end = 0;
+            sum = 0;
+            left = null;
+            right = null;
+        }
+    }
+
+    Node root;
+
+    public NumArray(int[] nums) {
+
+        if (nums.length > 0)
+            root = buildSegmentTree(nums, 0, nums.length - 1);
+    }
+
+    private Node buildSegmentTree(int[] nums, int s, int e) {
+
+        Node node = new Node();
+
+        node.start = s;
+        node.end = e;
+
+        // Leaf node
+        if (s == e) {
+            node.sum = nums[s];
+            return node;
+        }
+
+        int mid = s + (e - s) / 2;
+
+        node.left = buildSegmentTree(nums, s, mid);
+        node.right = buildSegmentTree(nums, mid + 1, e);
+
+        node.sum = node.left.sum + node.right.sum;
+
+        return node;
+    }
+
+    private void updateNode(Node node, int idx, int val) {
+
+        // Reached the leaf
+        if (node.start == node.end) {
+            node.sum = val;
+            return;
+        }
+
+        int mid = node.start + (node.end - node.start) / 2;
+
+        if (idx <= mid)
+            updateNode(node.left, idx, val);
+        else
+            updateNode(node.right, idx, val);
+
+        // Update current node
+        node.sum = node.left.sum + node.right.sum;
+    }
+
+    private int sumRangeTree(Node node, int left, int right) {
+
+        // No overlap
+        if (node == null || right < node.start || left > node.end)
+            return 0;
+
+        // Complete overlap
+        if (left <= node.start && node.end <= right)
+            return node.sum;
+
+        // Partial overlap
+        return sumRangeTree(node.left, left, right)
+             + sumRangeTree(node.right, left, right);
+    }
+
+    public void update(int index, int val) {
+        updateNode(root, index, val);
+    }
+
+    public int sumRange(int left, int right) {
+        return sumRangeTree(root, left, right);
+    }
+}
